@@ -33,8 +33,11 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import blog
-    app.register_blueprint(blog.bp)
+    from . import player
+    app.register_blueprint(player.bp)
     app.add_url_rule('/', endpoint='index')
+
+    from . import file
+    app.register_blueprint(file.bp)
 
     return app
