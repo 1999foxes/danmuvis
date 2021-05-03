@@ -37,6 +37,19 @@ def init_db_command():
     click.echo('Initialized the database.')
 
 
+@click.command('print-db')
+@click.option('-t', '--table')
+@with_appcontext
+def print_db_command(table):
+    cur = get_db().cursor()
+    cur.execute(
+        'select * FROM ' + (table if table is not None else 'video')
+    )
+    for row in cur.fetchall():
+        click.echo(list(row))
+
+
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    app.cli.add_command(print_db_command)

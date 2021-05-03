@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="#s"?>
+<i>
+  <!--
+B站录播姬 1.2.3 4f8f1113a6ec05ed54dfddcf691ba8f68e580382
+本文件的弹幕信息兼容B站主站视频弹幕XML格式
+本XML自带样式可以在浏览器里打开（推荐使用Chrome）
+
+sc 为SuperChat
+gift为礼物
+guard为上船
+
+attribute "raw" 为原始数据
+-->
+  <chatserver>chat.bilibili.com</chatserver>
+  <chatid>0</chatid>
+  <mission>0</mission>
+  <maxlimit>1000</maxlimit>
+  <state>0</state>
+  <real_name>0</real_name>
+  <source>0</source>
+  <BililiveRecorder version="1.2.3-4f8f1113" />
+  <BililiveRecorderRecordInfo roomid="22853788" name="白雪艾莉娅_Official" start_time="2021-05-04T02:40:54.7080886+08:00" />
+  <BililiveRecorderXmlStyle><z:stylesheet version="1.0" id="s" xml:id="s" xmlns:z="http://www.w3.org/1999/XSL/Transform"><z:output method="html"/><z:template match="/"><html><meta name="viewport" content="width=device-width"/><title>B站录播姬弹幕文件 - <z:value-of select="/i/BililiveRecorderRecordInfo/@name"/></title><style>body{margin:0}h1,h2,p,table{margin-left:5px}table{border-spacing:0}td,th{border:1px solid grey;padding:1px}th{position:sticky;top:0;background:#4098de}tr:hover{background:#d9f4ff}div{overflow:auto;max-height:80vh;max-width:100vw;width:fit-content}</style><h1>B站录播姬弹幕XML文件</h1><p>本文件的弹幕信息兼容B站主站视频弹幕XML格式，可以使用现有的转换工具把文件中的弹幕转为ass字幕文件</p><table><tr><td>录播姬版本</td><td><z:value-of select="/i/BililiveRecorder/@version"/></td></tr><tr><td>房间号</td><td><z:value-of select="/i/BililiveRecorderRecordInfo/@roomid"/></td></tr><tr><td>主播名</td><td><z:value-of select="/i/BililiveRecorderRecordInfo/@name"/></td></tr><tr><td>录制开始时间</td><td><z:value-of select="/i/BililiveRecorderRecordInfo/@start_time"/></td></tr><tr><td><a href="#d">弹幕</a></td><td>共 <z:value-of select="count(/i/d)"/> 条记录</td></tr><tr><td><a href="#guard">上船</a></td><td>共 <z:value-of select="count(/i/guard)"/> 条记录</td></tr><tr><td><a href="#sc">SC</a></td><td>共 <z:value-of select="count(/i/sc)"/> 条记录</td></tr><tr><td><a href="#gift">礼物</a></td><td>共 <z:value-of select="count(/i/gift)"/> 条记录</td></tr></table><h2 id="d">弹幕</h2><div><table><tr><th>用户名</th><th>弹幕</th><th>参数</th></tr><z:for-each select="/i/d"><tr><td><z:value-of select="@user"/></td><td><z:value-of select="."/></td><td><z:value-of select="@p"/></td></tr></z:for-each></table></div><h2 id="guard">舰长购买</h2><div><table><tr><th>用户名</th><th>舰长等级</th><th>购买数量</th><th>出现时间</th></tr><z:for-each select="/i/guard"><tr><td><z:value-of select="@user"/></td><td><z:value-of select="@level"/></td><td><z:value-of select="@count"/></td><td><z:value-of select="@ts"/></td></tr></z:for-each></table></div><h2 id="sc">SuperChat 醒目留言</h2><div><table><tr><th>用户名</th><th>内容</th><th>显示时长</th><th>价格</th><th>出现时间</th></tr><z:for-each select="/i/sc"><tr><td><z:value-of select="@user"/></td><td><z:value-of select="."/></td><td><z:value-of select="@time"/></td><td><z:value-of select="@price"/></td><td><z:value-of select="@ts"/></td></tr></z:for-each></table></div><h2 id="gift">礼物</h2><div><table><tr><th>用户名</th><th>礼物名</th><th>礼物数量</th><th>出现时间</th></tr><z:for-each select="/i/gift"><tr><td><z:value-of select="@user"/></td><td><z:value-of select="@giftname"/></td><td><z:value-of select="@giftcount"/></td><td><z:value-of select="@ts"/></td></tr></z:for-each></table></div></html></z:template></z:stylesheet></BililiveRecorderXmlStyle>
+  <d p="10.4719114,1,25,5566168,1620067265180,0,241156637,0" user="泥石流的存在">【没办法啊这家伙，真碍事啊】</d>
+  <d p="18.2959114,1,25,5566168,1620067273004,0,241156637,0" user="泥石流的存在">【诶诶诶诶？】</d>
+  <d p="27.8679114,1,25,16772431,1620067282576,0,12174612,0" user="勾八人">哈啊哈</d>
+  <d p="29.1149114,1,25,16772431,1620067283823,0,12174612,0" user="勾八人">草</d>
+  <d p="29.9099114,1,25,5566168,1620067284618,0,5779356,0" user="仮面ライダーゼロツー">wwww</d>
+  <d p="31.5169114,1,25,5566168,1620067286225,0,2344403,0" user="藤原萌葉">？？？？</d>
+  <d p="32.5169114,1,25,5566168,1620067287225,0,30024677,0" user="咸鱼美食殿">草</d>
+  <d p="32.6049114,1,25,16777215,1620067287313,0,121429,0" user="仏">草</d>
+  <d p="33.3909114,4,25,14893055,1620067288099,0,128541,0" user="伊拉娜依子">草</d>
+  <d p="33.6219114,1,25,65532,1620067288330,0,747418,0" user="约定喵">？</d>
+  <d p="34.0029114,1,25,5566168,1620067288711,0,5779356,0" user="仮面ライダーゼロツー">草</d>
+  <d p="34.0779114,1,25,16777215,1620067288786,0,289037,0" user="ILA">wwwww</d>
+  <d p="34.8419114,1,25,5566168,1620067289550,0,336479926,0" user="三冰小ice">裂开</d>
+  <d p="35.0459114,1,25,5816798,1620067289754,0,19606121,0" user="星耀___">www</d>
+  <d p="35.0289114,1,25,5566168,1620067289737,0,22911008,0" user="日岡琴葉">哈哈哈哈哈哈</d>
+  <d p="37.1939114,1,25,5566168,1620067291902,0,241156637,0" user="泥石流的存在">【真tm碍事】</d>
+  <d p="38.3299114,1,25,5566168,1620067293038,0,5699276,0" user="懒得取名桑">打雷下雨，有你陪伴噗</d>
+  <d p="38.6479114,1,25,16777215,1620067293356,0,376414167,0" user="是常威杀了来福">wwwwww</d>
+  <d p="40.9929114,1,25,5566168,1620067295701,0,31250,0" user="不笑猫大人">惨</d>
+  <d p="46.3959114,1,25,5566168,1620067301104,0,241156637,0" user="泥石流的存在">【果然还是别拿了】</d>
+  <d p="59.5279114,1,25,14893055,1620067314236,0,3061091,0" user="Zzaki_">草</d>
+  <d p="59.6389114,1,25,16777215,1620067314347,0,17703518,0" user="A老司鸡">仙人模式！</d>
+  <d p="59.7229114,1,25,5566168,1620067314431,0,31250,0" user="不笑猫大人">啊</d>
+  <d p="60.7099114,1,25,16777215,1620067315418,0,8309253,0" user="泽目丶子舒">wwww</d>
+  <d p="61.2899114,1,25,5566168,1620067315998,0,12664732,0" user="安吉莉菈">www</d>
+  <d p="61.6989114,1,25,16777215,1620067316407,0,289037,0" user="ILA">惨</d>
+  <d p="61.7469114,4,25,14893055,1620067316455,0,128541,0" user="伊拉娜依子">草</d>
+  <d p="62.3669114,1,25,5566168,1620067317075,0,5779356,0" user="仮面ライダーゼロツー">23333</d>
+  <d p="62.8039114,1,25,5566168,1620067317512,0,2407523,0" user="Renault_Official">草</d>
+  <d p="69.6839114,1,25,5566168,1620067324392,0,21491835,0" user="hsuisl13">hhh</d>
+  <d p="70.1539114,1,25,16777215,1620067324862,0,339757,0" user="天下第一吃货殿下">(･∀･)睡醒 晚上好鸭</d>
+  <d p="70.5339114,1,25,5566168,1620067325242,0,173518683,0" user="仮面猫">wwww</d>
+  <d p="72.5489114,1,25,16777215,1620067327257,0,3073834,0" user="简直无情0v0">满脸仙气</d>
+  <d p="75.8349114,1,25,5566168,1620067330543,0,3160463,0" user="薬演人生">？</d>
+  <d p="79.8189114,1,25,16777215,1620067334527,0,695183725,0" user="Lulumu_Lumu">操作逐渐暴躁</d>
+</i>

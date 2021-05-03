@@ -1,16 +1,22 @@
 import os
-import shutil
+import os.path
 import subprocess
 import time
           
+
+workplace = './workplace/'
+
 
 class Video:
     def __init__(self, filename):
         self.filename = filename
 
+    def update_metadata(self):
+        pass
+
     def clip(self, range, clipname, assfilename=None):
         INPUT_MEDIA = self.filename
-        OUTPUT_NAME = './' + INPUT_MEDIA + '.clip.' + clipname
+        OUTPUT_NAME = workplace + INPUT_MEDIA + '.' + clipname + '.clip'
         OUTPUT_TYPE = '.mp4'
 
         tag_start = str(range[0])

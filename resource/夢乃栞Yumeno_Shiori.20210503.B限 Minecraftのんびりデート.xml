@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="#s"?>
+<i>
+  <!--
+B站录播姬 1.2.2 815189c64548c82f218298ce03d557523c480e48
+本文件的弹幕信息兼容B站主站视频弹幕XML格式
+本XML自带样式可以在浏览器里打开（推荐使用Chrome）
+
+sc 为SuperChat
+gift为礼物
+guard为上船
+
+attribute "raw" 为原始数据
+-->
+  <chatserver>chat.bilibili.com</chatserver>
+  <chatid>0</chatid>
+  <mission>0</mission>
+  <maxlimit>1000</maxlimit>
+  <state>0</state>
+  <real_name>0</real_name>
+  <source>0</source>
+  <BililiveRecorder version="1.2.2-815189c6" />
+  <BililiveRecorderRecordInfo roomid="14052636" name="夢乃栞Yumeno_Shiori" start_time="2021-05-03T22:08:40.1732288+08:00" />
+  <BililiveRecorderXmlStyle><z:stylesheet version="1.0" id="s" xml:id="s" xmlns:z="http://www.w3.org/1999/XSL/Transform"><z:output method="html"/><z:template match="/"><html><meta name="viewport" content="width=device-width"/><title>B站录播姬弹幕文件 - <z:value-of select="/i/BililiveRecorderRecordInfo/@name"/></title><style>body{margin:0}h1,h2,p,table{margin-left:5px}table{border-spacing:0}td,th{border:1px solid grey;padding:1px}th{position:sticky;top:0;background:#4098de}tr:hover{background:#d9f4ff}div{overflow:auto;max-height:80vh;max-width:100vw;width:fit-content}</style><h1>B站录播姬弹幕XML文件</h1><p>本文件的弹幕信息兼容B站主站视频弹幕XML格式，可以使用现有的转换工具把文件中的弹幕转为ass字幕文件</p><table><tr><td>录播姬版本</td><td><z:value-of select="/i/BililiveRecorder/@version"/></td></tr><tr><td>房间号</td><td><z:value-of select="/i/BililiveRecorderRecordInfo/@roomid"/></td></tr><tr><td>主播名</td><td><z:value-of select="/i/BililiveRecorderRecordInfo/@name"/></td></tr><tr><td>录制开始时间</td><td><z:value-of select="/i/BililiveRecorderRecordInfo/@start_time"/></td></tr><tr><td><a href="#d">弹幕</a></td><td>共 <z:value-of select="count(/i/d)"/> 条记录</td></tr><tr><td><a href="#guard">上船</a></td><td>共 <z:value-of select="count(/i/guard)"/> 条记录</td></tr><tr><td><a href="#sc">SC</a></td><td>共 <z:value-of select="count(/i/sc)"/> 条记录</td></tr><tr><td><a href="#gift">礼物</a></td><td>共 <z:value-of select="count(/i/gift)"/> 条记录</td></tr></table><h2 id="d">弹幕</h2><div><table><tr><th>用户名</th><th>弹幕</th><th>参数</th></tr><z:for-each select="/i/d"><tr><td><z:value-of select="@user"/></td><td><z:value-of select="."/></td><td><z:value-of select="@p"/></td></tr></z:for-each></table></div><h2 id="guard">舰长购买</h2><div><table><tr><th>用户名</th><th>舰长等级</th><th>购买数量</th><th>出现时间</th></tr><z:for-each select="/i/guard"><tr><td><z:value-of select="@user"/></td><td><z:value-of select="@level"/></td><td><z:value-of select="@count"/></td><td><z:value-of select="@ts"/></td></tr></z:for-each></table></div><h2 id="sc">SuperChat 醒目留言</h2><div><table><tr><th>用户名</th><th>内容</th><th>显示时长</th><th>价格</th><th>出现时间</th></tr><z:for-each select="/i/sc"><tr><td><z:value-of select="@user"/></td><td><z:value-of select="."/></td><td><z:value-of select="@time"/></td><td><z:value-of select="@price"/></td><td><z:value-of select="@ts"/></td></tr></z:for-each></table></div><h2 id="gift">礼物</h2><div><table><tr><th>用户名</th><th>礼物名</th><th>礼物数量</th><th>出现时间</th></tr><z:for-each select="/i/gift"><tr><td><z:value-of select="@user"/></td><td><z:value-of select="@giftname"/></td><td><z:value-of select="@giftcount"/></td><td><z:value-of select="@ts"/></td></tr></z:for-each></table></div></html></z:template></z:stylesheet></BililiveRecorderXmlStyle>
+  <d p="0.1757712,1,25,5566168,1620050920349,0,65258567,0" user="KomakiMegumi">啾啾大姐</d>
+  <d p="1.1937712,1,25,5566168,1620050921367,0,21184828,0" user="雪乃股的团灭派">好耶</d>
+  <d p="1.4357712,1,25,16777215,1620050921609,0,1512915,0" user="心靈鹽巴">來了(｀・ω・´)</d>
+  <d p="3.5477712,1,25,5816798,1620050923721,0,411385312,0" user="ES紅狐">理解理解</d>
+  <d p="4.7907712,1,25,5566168,1620050924964,0,504220324,0" user="なるるーな">酔ったシオリちゃんはかわいいからな</d>
+  <d p="7.9867712,1,25,16777215,1620050928160,0,346551271,0" user="白羽拂雪">(=・ω・=)</d>
+  <d p="8.4917712,1,25,65532,1620050928665,0,14205184,0" user="空幻゜">吨吨吨</d>
+  <d p="8.9107712,1,25,9920249,1620050929084,0,1808708,0" user="桜绯丶">来了来了。大姐晚上好~</d>
+  <d p="13.0517712,1,25,5816798,1620050933225,0,223202911,0" user="Heongle_へオンリー">【好香】</d>
+  <d p="13.2827712,1,25,16777215,1620050933456,0,387196277,0" user="Leon6415">晚上好</d>
+  <d p="14.2607712,1,25,5566168,1620050934434,0,440900688,0" user="伊丽莎牛鼠">大姐晚上好</d>
+  <d p="20.5427712,1,25,5566168,1620050940716,0,3727466,0" user="镜也久">配信のタイトルは？</d>
+  <d p="21.4987712,1,25,16777215,1620050941672,0,381752120,0" user="初见白雪姬">大姐晚上好</d>
+  <d p="22.2747712,1,25,5816798,1620050942448,0,411385312,0" user="ES紅狐">紅茶入り！？</d>
+  <d p="24.2387712,1,25,16777215,1620050944412,0,37518047,0" user="信田大人驾到">一起喝酒吧</d>
+  <d p="24.7087712,1,25,5816798,1620050944882,0,223202911,0" user="Heongle_へオンリー">【有红茶的味道】</d>
+  <d p="26.2477712,1,25,5566168,1620050946421,0,427663504,0" user="灰纸屑">2</d>
+  <d p="27.5897712,1,25,5566168,1620050947763,0,12850349,0" user="我喜欢塞拉的笑容">大姐在调酒</d>
+</i>
