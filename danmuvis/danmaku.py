@@ -1,12 +1,19 @@
 import xml.sax
-from danmuvis import ass
+import json
+import os.path
 
 
 class Danmaku:
-    def __init__(self, filename):
+    def __init__(self, filename, path):
         self.filename = filename
+        self.path = path
+        self.highlight = None
+
+    def generateHighlight(self):
         self.highlight = {'density': [], 'funny': [], 'exciting': [], 'lovely': []}
         self.decodeDanmakuXML(self.calcHightlight)
+        with open(os.path.join(self.path, self.filename).replace('xml', 'json'), 'w') as highlight_file:
+            json.dump(self.highlight, highlight_file)
 
     # 待实现，使用多个DFA过滤弹幕计算精彩值
     def calcHightlight(self, d):
@@ -17,14 +24,12 @@ class Danmaku:
                 self.highlight[key].append(0)
         self.highlight['density'][-1] += 1
     
-    def generateASS(self, filename, range):
-        a = ass.ASS(filename, range)
-        self.decodeDanmakuXML(a.append)
-        a.flush()
+    def generateASS(self, range=None, delay=0, assname=None):
+        pass
     
     class D:
         def __init__(self, p, user, content):
-            attr = p.split(',');
+            attr = p.split(',')
             self.time = float(attr[0])
             self.user = user
             self.content = content
@@ -63,4 +68,3 @@ class Danmaku:
 if __name__ == '__main__':
     danmaku = Danmaku(r'录制-22853788-20210311-190152-【B限】5万人纪念晩酌配信.xml')
     print(danmaku.highlight)
-    danmaku.generateASS('test.ass', [100, 200])

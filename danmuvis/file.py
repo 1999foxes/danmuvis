@@ -11,67 +11,87 @@ from flask.cli import with_appcontext
 
 from werkzeug.exceptions import abort
 
-from danmuvis.auth import login_required
-from danmuvis.db import get_db
+from .auth import login_required
+from .db import get_db
+from .danmaku import Danmaku
 
 
 bp = Blueprint('file', __name__, url_prefix='/file')
 
-video_ext = ['flv', 'mp4', 'FLV', 'MP4']
+video_ext = ['flv', 'FLV']
+danmaku_ext = ['xml', 'XML']
 
 
-def update_files(path=None):
+def set_path(path):
     db = get_db()
     cur = db.cursor()
-    if path is None:
-        path = cur.execute('SELECT p from path').fetchone()['p']
-    else:
-        cur.execute('DELETE FROM path')
-        cur.execute("INSERT INTO path(p) VALUES('" + path + "')")
+    cur.execute('DELETE FROM path')
+    cur.execute("INSERT INTO path(p) VALUES('" + path + "')")
+    db.commit()
+
+
+def get_path():
+    path = get_db().execute('SELECT p from path').fetchone()['p']
+    return path
+
+
+def update_files():
+    path = get_path()
+
+    db = get_db()
+    cur = db.cursor()
 
     cur.execute(
         'DELETE FROM video'
     )
-    cur.execute(
-        'DELETE FROM clip'
-    )
+    # cur.execute(
+    #     'DELETE FROM clip'
+    # )
     for filename in os.listdir(path):
         if os.path.isfile(os.path.join(path, filename)):
             if filename.split('.')[-1] in video_ext:
-                if 'clip' in filename.split('.'):
-                    cur.execute(
-                        'INSERT INTO clip(filename, video_filename_no_ext, state)'
-                        'VALUES (?, ?, ?)',
-                        (filename, '.'.join(filename.split('.')[0:3]), 1)
-                    )
-                else:
-                    if 'metadata' not in filename.split('.'):
-                        # generate thumbnails
-                        cmd = './danmuvis/tools/ffmpeg.exe -i "' + os.path.join(path, filename) + '" ' \
-                              + '-ss 00:00:00.000 -vframes 1 "' + os.path.join(path, filename.replace('flv', 'jpg')) + '"'
-                        print(cmd)
-                        subprocess.call(cmd, shell=False)
+                # if 'clip' in filename.split('.'):
+                #     # insert clip info into database
+                #     cur.execute(
+                #         'INSERT INTO clip(filename, video_filename, state)'
+                #         'VALUES (?, ?, ?)',
+                #         (filename, '.'.join(filename.split('.')[0:-3]), 1)
+                #     )
+                # else:
+                if 'ready' not in filename.split('.'):
+                    # generate thumbnails
+                    cmd = './danmuvis/tools/ffmpeg.exe -i "' + os.path.join(path, filename) + '" ' \
+                          + '-ss 00:00:00.000 -vframes 1 "' + os.path.join(path, filename.replace('flv', 'jpg')) + '"'
+                    print(cmd)
+                    subprocess.call(cmd, shell=False)
 
-                        # inject metadata
-                        new_filename = filename[0:-3] + 'metadata.flv'
-                        cmd = './danmuvis/tools/yamdi.exe -i "' + os.path.join(path, filename) \
-                              + '" -o "' + os.path.join(path, new_filename) + '"'
-                        print(cmd)
-                        subprocess.call(cmd, shell=False)
+                    # inject metadata
+                    new_filename = filename[0:-4] + '.ready.flv'
+                    cmd = './danmuvis/tools/yamdi.exe -i "' + os.path.join(path, filename) \
+                          + '" -o "' + os.path.join(path, new_filename) + '"'
+                    print(cmd)
+                    subprocess.call(cmd, shell=False)
 
-                        # replace old file
-                        os.remove(os.path.join(path, filename))
-                        filename = new_filename
-                    cur.execute(
-                        'INSERT INTO video(filename, filename_no_ext, streamer, date, title)'
-                        'VALUES (?, ?, ?, ?, ?)',
-                        (filename,
-                         '.'.join(filename.split('.')[0:3]),
-                         filename.split('.')[0],
-                         filename.split('.')[1],
-                         filename.split('.')[2]
-                         )
-                    )
+                    # replace old file
+                    os.remove(os.path.join(path, filename))
+                    filename = new_filename
+
+                # insert video info into database
+                cur.execute(
+                    'INSERT INTO video(filename, title, streamer, date)'
+                    'VALUES (?, ?, ?, ?)',
+                    (filename,
+                     filename.split('.')[0],
+                     filename.split('.')[1],
+                     filename.split('.')[2]
+                     )
+                )
+            elif filename.split('.')[-1] in danmaku_ext:
+                if 'ready' not in filename.split('.'):
+                    d = Danmaku(os.path.join(path, filename))
+                    d.generateHighlight()
+                    d.generateASS()
+                    os.rename(os.path.join(path, filename), os.path.join(path, filename[0:-4] + '.ready.xml'))
     db.commit()
     pass
 
@@ -80,7 +100,9 @@ def update_files(path=None):
 @click.option('-p', '--path')
 @with_appcontext
 def update_files_command(path=None):
-    update_files(path)
+    if path is not None:
+        set_path(path)
+    update_files()
     click.echo('File updated.')
 
 
@@ -140,31 +162,62 @@ def get_streamer_list():
 @bp.route('/clip_list', methods=('POST',))
 def get_clip_list():
     keyword = request.form.get('keyword', '')
-    video_filename_no_ext = request.form.get('video_filename_no_ext', '')
+    video_filename = request.form.get('video_filename', '')
     state = request.form.get('state', '')
     cur = get_db().cursor()
     cur.execute(
         "CREATE TEMP TABLE clip AS SELECT * FROM clip"
     )
-
-    if len(keyword) > 0:
-        cur.execute(
-            "DELETE from temp.clip"
-            " WHERE filename NOT LIKE '%" + keyword + "%'"
-        )
-    if len(video_filename_no_ext) > 0:
-        cur.execute(
-            "DELETE from temp.clip"
-            " WHERE video_filename_no_ext <> '" + video_filename_no_ext + "'"
-        )
-    if len(state) > 0:
-        cur.execute(
-            "DELETE from temp.clip"
-            " WHERE state < '" + state + "'"
-        )
+    #
+    # if len(keyword) > 0:
+    #     cur.execute(
+    #         "DELETE from temp.clip"
+    #         " WHERE filename NOT LIKE '%" + keyword + "%'"
+    #     )
+    # if len(video_filename) > 0:
+    #     cur.execute(
+    #         "DELETE from temp.clip"
+    #         " WHERE video_filename <> '" + video_filename + "'"
+    #     )
+    # if len(state) > 0:
+    #     cur.execute(
+    #         "DELETE from temp.clip"
+    #         " WHERE state <> " + state + ""
+    #     )
 
     cur.execute(
         "select filename, state from temp.clip"
     )
     clip_list = list(map(lambda row: list(row), cur.fetchall()))
+    print(clip_list)
     return jsonify(clip_list)
+
+
+def has_video(filename):
+    cur = get_db().cursor()
+    return cur.execute("SELECT * FROM video WHERE filename='" + filename + "'").fetchone() is not None
+
+
+def has_clip(filename):
+    cur = get_db().cursor()
+    return cur.execute("SELECT * FROM clip WHERE filename='" + filename + "'").fetchone() is not None
+
+
+def new_clip(filename, video_filename):
+    db = get_db()
+    cur = db.cursor()
+    cur.execute(
+        'INSERT INTO clip(filename, video_filename, state)'
+        'VALUES (?, ?, ?)',
+        (filename, video_filename, 0)
+    )
+    db.commit()
+
+
+def set_clip_state(filename, state=1):
+    db = get_db()
+    cur = db.cursor()
+    cur.execute(
+        "UPDATE clip SET state=" + str(state) + " WHERE filename='" + filename + "'"
+    )
+    db.commit()

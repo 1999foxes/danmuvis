@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+<div id="video_container">
+    <video id="video" controls style="width: 100%;"></video>
+</div>
+
+<div id="visualize_container">
+
+
+
+</div>
+
+<table id="cliplist">
+    <thead>
+        <tr>
+            <th>相关切片</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script> filename = '{{ filename }}' </script>
+
+<script src="{{ url_for('static', filename='flv.min.js') }}"></script>
+<script src="{{ url_for('static', filename='d3.v6.min.js') }}"></script>
+<script src="{{ url_for('static', filename='node_modules/assjs/dist/ass.min.js') }}"></script>
+
+<script>
+
+    var videoContainer = document.getElementById('video_container');
+    var videoElement = document.getElementById('video');
+
+    // refer to https://github.com/Bilibili/flv.js#readme
+    var flvPlayer = flvjs.createPlayer({
+        type: 'flv',
+        url: '{{ url_for('player.get_video', filename=filename) }}'
+    });
+    flvPlayer.attachMediaElement(videoElement);
+    flvPlayer.load();
+
+    // refer to https://github.com/weizhenye/ASS#readme
+    var ass;
+    fetch('{{ url_for('player.get_ass', filename=filename) }}')
+        .then(res => res.text())
+        .then((text) => {
+            ass = new ASS(text, videoElement, {
+                resampling: "script_width"
+            });
+        });
+
+    videoElement.addEventListener('play', () => ass.resize());
+
+
+
+</script>
+
+<script src="{{ url_for('static', filename='visualize.js') }}"></script>
+<script src="{{ url_for('static', filename='cliplist.js') }}"></script>
+
+{% endblock %}

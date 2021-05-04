@@ -1,9 +1,9 @@
-async function fetchVideoList(keyword, streamer, dateFrom, dateTo) {
+async function fetchVideoList(keyword='', streamer='', dateFrom='', dateTo='') {
     const fd = new FormData();
-    fd.append('keyword', keyword || '');
-    fd.append('streamer', streamer || '');
-    fd.append('dateFrom', (dateFrom ? dateFrom.replaceAll('-', '') : ''));
-    fd.append('dateTo', (dateTo ? dateTo.replaceAll('-', '') : ''));
+    fd.append('keyword', keyword);
+    fd.append('streamer', streamer);
+    fd.append('dateFrom', dateFrom.replaceAll('-', ''));
+    fd.append('dateTo', dateTo.replaceAll('-', ''));
 
     const response = await fetch('/file/video_list', {
         method: 'POST',

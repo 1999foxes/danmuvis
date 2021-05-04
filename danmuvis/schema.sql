@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS video;
 DROP TABLE IF EXISTS clip;
+DROP TABLE IF EXISTS path;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -10,15 +11,14 @@ CREATE TABLE user (
 
 CREATE TABLE video (
   filename TEXT PRIMARY KEY,
-  filename_no_ext TEXT NOT NULL,
+  title TEXT NOT NULL,
   streamer TEXT NOT NULL,
-  date TEXT NOT NULL,
-  title TEXT NOT NULL
+  date TEXT NOT NULL
 );
 
 CREATE TABLE clip (
   filename TEXT PRIMARY KEY,
-  video_filename_no_ext TEXT NOT NULL,
+  video_filename TEXT NOT NULL,
   state int NOT NULL
 );
 
