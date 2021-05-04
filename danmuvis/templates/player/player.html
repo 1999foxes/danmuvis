@@ -6,7 +6,7 @@
 {% block content %}
 
 <div id="video_container">
-    <video id="video" controls style="width: 100%;"></video>
+    <video id="video" style="width: 100%;"></video>
 </div>
 
 <div id="visualize_container">
@@ -43,6 +43,13 @@
     flvPlayer.attachMediaElement(videoElement);
     flvPlayer.load();
 
+    videoElement.addEventListener('click', function() {
+        if (this.paused)
+            this.play();
+        else
+            this.pause()
+    });
+
     // refer to https://github.com/weizhenye/ASS#readme
     var ass;
     fetch('{{ url_for('player.get_ass', filename=filename) }}')
@@ -59,7 +66,8 @@
 
 </script>
 
-<script src="{{ url_for('static', filename='visualize.js') }}"></script>
 <script src="{{ url_for('static', filename='cliplist.js') }}"></script>
+<script src="{{ url_for('static', filename='clip.js') }}"></script>
+<script src="{{ url_for('static', filename='visualize.js') }}"></script>
 
 {% endblock %}

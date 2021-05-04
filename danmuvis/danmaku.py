@@ -62,7 +62,7 @@ class Danmaku:
         parser.setFeature(xml.sax.handler.feature_namespaces, 0)
         danmakuHandler = Danmaku.DanmakuHandler(handler)
         parser.setContentHandler(danmakuHandler)
-        parser.parse(self.filename)
+        parser.parse(os.path.join(self.path, self.filename))
 
 
 if __name__ == '__main__':

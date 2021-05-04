@@ -88,7 +88,7 @@ def update_files():
                 )
             elif filename.split('.')[-1] in danmaku_ext:
                 if 'ready' not in filename.split('.'):
-                    d = Danmaku(os.path.join(path, filename))
+                    d = Danmaku(filename, path)
                     d.generateHighlight()
                     d.generateASS()
                     os.rename(os.path.join(path, filename), os.path.join(path, filename[0:-4] + '.ready.xml'))
