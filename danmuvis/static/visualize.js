@@ -7,9 +7,9 @@ yLabel = 'density';
 deltaTime = 10;
 data = highlight[yLabel];
 
-height = 150
+height = 100
 width = 1000
-margin = ({top: 20, right: 20, bottom: 30, left: 30})
+margin = ({top: 10, right: 50, bottom: 0, left: 50})
 
 x = d3.scaleLinear()
     .domain([0, data.length * deltaTime])
@@ -62,19 +62,24 @@ chart = function() {
       .attr("fill", "steelblue")
       .attr("d", area(data, x));
 
-  const gx = svg.append("g")
-      .call(xAxis, x);
+//  const gx = svg.append("g")
+//      .call(xAxis, x);
+//
+//  const gy = svg.append("g")
+//      .call(yAxis, y);
 
-  svg.append("g")
-      .call(yAxis, y);
+  const cursor = svg.append('rect')
+      .attr('width', 1)
+      .attr('height', 500)
+      .style('fill', 'red');
 
-  let mousedownTime, mouseupTime;
-
-  const clipRangeRect = svg.append("rect")
-      .style("fill", "red")
-      .style("opacity", 0.4)
-      .attr("height", height)
-      .attr("width", 0);
+  const cursorLabel = svg.append("text")
+      .text("0:00:00.000")
+      .attr("x", margin.left + 10)
+      .attr("y", margin.top + 10)
+      .style('fill', 'black')
+      .style('font-weight', 'bold')
+      .style('font-size', '15px');
 
   const zoom = d3.zoom()
       .scaleExtent([1, 32])
@@ -84,16 +89,18 @@ chart = function() {
       .filter(filterWheelOnly);
 
   let zoomedTransform;
+  let isMousedown = false;
+  let mousedownTime, mouseupTime;
+  let timeTranslateSpeed = 0;
 
   function zoomed(event) {
     zoomedTransform = event.transform;
     const xz = event.transform.rescaleX(x);
     path.attr("d", area(data, xz));
-    if (mousedownTime != null)
-        clipRangeRect.attr("x", xz(mousedownTime));
-    if (mouseupTime != null && mouseupTime > mousedownTime)
-        clipRangeRect.attr("width", xz(mouseupTime) - xz(mousedownTime));
-    gx.call(xAxis, xz);
+//    gx.call(xAxis, xz);
+    drawClipRanges();
+    const cursorTime = xz.invert(cursor.attr("x"));
+    cursorLabelUpdate(cursorTime);
   }
 
   function filterWheelOnly(event) {
@@ -103,20 +110,16 @@ chart = function() {
   svg.call(zoom)
     .call(zoom.scaleTo, 1);
 
-  cursor = svg.append('rect')
-      .attr('width', 1)
-      .attr('height', 500)
-      .style('fill', 'red');
+  function cursorLabelUpdate(time) {
+    cursorLabel
+        .text(new Date(time * 1000).toISOString().substr(12, 11));
+    if (isMousedown) {
+      videoElement.currentTime = time;
+      setClipRange([mousedownTime, time]);
+    }
+  }
 
-  cursorLabel = svg.append("text")
-      .text("0:00:00.000")
-      .attr("x", margin.left + 10)
-      .attr("y", margin.top + 10)
-      .style('fill', 'black')
-      .style('font-weight', 'bold')
-      .style('font-size', '15px');
-
-  function followTime(time, timeX, durationTime) {
+  function cursorTranslate(time, timeX, durationTime) {
     cursor
       .transition()
         .duration(durationTime)
@@ -124,65 +127,113 @@ chart = function() {
     return cursorLabel
       .transition()
         .duration(durationTime)
-        .text(new Date(time * 1000).toISOString().substr(12, 11))
         .attr("x", (width - timeX > 100 ? timeX + 10 : timeX - 100));
   }
 
-  function loopingFollowTime() {
+  function loopCursorTranslateWithCurrentTime() {
     let time = videoElement.currentTime;
     let timeX = zoomedTransform.rescaleX(x)(time);
-    followTime(time, timeX, 1000)
-        .on("end", loopingFollowTime);
+
+    if (timeX >= x.range()[1]) {
+      svg.transition()
+        .duration(1000)
+        .call(zoom.translateBy, (x.range()[1] - timeX) / zoomedTransform.k, 0);
+    } else if (timeX <= x.range()[0]) {
+      svg.transition()
+        .duration(1000)
+        .call(zoom.translateBy, (x.range()[0] - timeX) / zoomedTransform.k, 0);
+    }
+
+    cursorLabelUpdate(time);
+    cursorTranslate(time, timeX, 1000)
+        .on("end", loopCursorTranslateWithCurrentTime);
   }
 
-  loopingFollowTime();
+  loopCursorTranslateWithCurrentTime();
 
-  svg.on("mousedown", function(e, d) {
+  function drawClipRanges() {
+    const zx = zoomedTransform.rescaleX(x);
+    cr = svg.selectAll(".clip_ranges")
+      .data(clipRanges);
+
+    cr.attr("x", function(d) { return zx(d[0]); })
+        .attr("width", function(d) { return Math.max(zx(d[1]) - zx(d[0]), 0); });
+
+    cr.enter()
+      .append("rect")
+        .classed("clip_ranges", true)
+        .attr("x", function(d) { return zx(d[0]); })
+        .attr("width", function(d) { return Math.max(zx(d[1]) - zx(d[0]), 0); })
+        .attr("height", height)
+        .style("fill", function(d, i) { return colorScheme[i % colorScheme.length]; })
+        .style("opacity", 0.2);
+
+    cr.exit().remove();
+  }
+
+  function onMousedown(e, d) {
+    isMousedown = true;
+
     let timeX = d3.pointer(e)[0];
     let time = x.invert(zoomedTransform.invert([timeX, 0])[0]);
     videoElement.currentTime = time;
     mousedownTime = time;
     mouseupTime = null;
-    clipRangeRect.attr("x", timeX)
-      .attr("width", 0);
-  });
 
-  svg.on("mouseup", function(e, d) {
+    addClipRange(time, 0);
+  }
+
+  function onMouseup(e, d) {
+    isMousedown = false;
+
     let timeX = d3.pointer(e)[0];
     mouseupTime = x.invert(zoomedTransform.invert([timeX, 0])[0]);
 
     if (mouseupTime <= mousedownTime) {
       mousedownTime = null;
       mouseupTime = null;
+      removeClipRange();
     } else {
       console.log("clip: ", mousedownTime, mouseupTime);
-      addClipRange([mousedownTime, mouseupTime]);
+      setClipRange([mousedownTime, mouseupTime]);
     }
-  });
+  }
 
-  svg.on("mousemove", function(e) {
+  function onMousemove(e) {
     let timeX = d3.pointer(e)[0];
 
-    if (timeX < x.range()[0])
-        timeX = x.range()[0];
-    else if (timeX > x.range()[1])
+    if (timeX < x.range()[0]) {
+      timeX = x.range()[0];
+      setTimeTranslateSpeed(20 / zoomedTransform.k);
+    } else if (timeX > x.range()[1]) {
       timeX = x.range()[1];
+      setTimeTranslateSpeed(-20 / zoomedTransform.k);
+    } else {
+      setTimeTranslateSpeed(0);
+    }
 
     let time = x.invert(zoomedTransform.invert([timeX, 0])[0]);
+    cursorLabelUpdate(time);
+    cursorTranslate(time, timeX, 0);
 
-    followTime(time, timeX, 0);
-
-    d3.transition                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ()
-        .duration(1000)
-        .on("end", loopingFollowTime);
-
-    if (mousedownTime != null && mouseupTime == null) {
-      videoElement.currentTime = time;
-      clipRangeRect.attr("width",
-        (timeX > clipRangeRect.attr("x") ? timeX - clipRangeRect.attr("x") : 0)
-      );
+    if (isMousedown) {
+      drawClipRanges();
     }
-  });
+  }
+
+  function onMouseleave(e) {
+    if (isMousedown)
+        onMouseup(e);
+    d3.transition()
+        .duration(1000)
+        .on("end", loopCursorTranslateWithCurrentTime);
+  }
+
+  svg.on("mousedown", onMousedown)
+      .on("mousemove", onMousemove)
+      .on("mouseup", onMouseup)
+      .on("mouseleave", onMouseleave);
+
 
   function timeTranslateBy(deltaX, durationTime) {
     return svg.transition()
@@ -190,40 +241,32 @@ chart = function() {
       .call(zoom.translateBy, deltaX, 0);
   }
 
-  function loopingTimeTranslateBy(deltaX, durationTime) {
+  function loopTimeTranslateBy(deltaX, durationTime) {
     timeTranslateBy(deltaX, durationTime)
-      .on("end", function() { loopingTimeTranslateBy(deltaX, durationTime); });
+      .on("end", function() { loopTimeTranslateBy(deltaX, durationTime); });
   }
 
-  svg.append("rect")
-      .attr("x", width - 100)
-      .attr("width", 100)
-      .attr("height", height)
-      .attr("fill", "black")
-      .attr("opacity", 0)
-      .on("mouseover", function(e) {
-        loopingTimeTranslateBy(-10 / zoomedTransform.k, 500);
-      })
-      .on("mouseleave", function() {
-        svg.transition();
-      });
+  function setTimeTranslateSpeed(speed) {
+    if (timeTranslateSpeed == speed)
+      return;
+    timeTranslateSpeed = speed;
+    if (speed == 0) {
+      svg.transition();
+    } else {
+      loopTimeTranslateBy(speed, 500);
+    }
+  }
 
-  svg.append("rect")
-      .attr("width", 100)
-      .attr("height", height)
-      .attr("fill", "black")
-      .attr("opacity", 0)
-      .on("mouseover", function(e) {
-        loopingTimeTranslateBy(10 / zoomedTransform.k, 500);
-      })
-      .on("mouseleave", function() {
-        svg.transition();
-      });
+  function resumeTimeTranslate() {
+    let s = timeTranslateSpeed;
+    timeTranslateSpeed = 0;
+    setTimeTranslateSpeed(s);
+  }
 
   return svg.node();
 }
 
-document.body.append(chart())
+document.getElementById("visualize_container").append(chart())
 
 }
 
