@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %} - </title>
+    <title>{% block title %}{% endblock %} - DanmuVis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
 <nav>
-  <h1>Danmuvis</h1>
+  <h1 onclick="window.location.href='{{ url_for('index') }}'">Danmuvis</h1>
   <ul>
     {% if g.user %}
       <li><span>{{ g.user['username'] }}</span>

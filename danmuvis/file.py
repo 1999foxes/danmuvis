@@ -1,5 +1,8 @@
 import os
 import os.path
+import re
+
+import sqlite3
 
 import subprocess
 
@@ -14,6 +17,7 @@ from werkzeug.exceptions import abort
 from .auth import login_required
 from .db import get_db
 from .danmaku import Danmaku
+from .video import Video
 
 
 bp = Blueprint('file', __name__, url_prefix='/file')
@@ -168,28 +172,31 @@ def get_clip_list():
     cur.execute(
         "CREATE TEMP TABLE clip AS SELECT * FROM clip"
     )
-    #
-    # if len(keyword) > 0:
-    #     cur.execute(
-    #         "DELETE from temp.clip"
-    #         " WHERE filename NOT LIKE '%" + keyword + "%'"
-    #     )
-    # if len(video_filename) > 0:
-    #     cur.execute(
-    #         "DELETE from temp.clip"
-    #         " WHERE video_filename <> '" + video_filename + "'"
-    #     )
-    # if len(state) > 0:
-    #     cur.execute(
-    #         "DELETE from temp.clip"
-    #         " WHERE state <> " + state + ""
-    #     )
+
+    if len(keyword) > 0:
+        cur.execute(
+            "DELETE from temp.clip"
+            " WHERE filename NOT LIKE '%" + keyword + "%'"
+        )
+    if len(video_filename) > 0:
+        cur.execute(
+            "DELETE from temp.clip"
+            " WHERE video_filename <> '" + video_filename + "'"
+        )
+    if len(state) > 0:
+        cur.execute(
+            "DELETE from temp.clip"
+            " WHERE state <> " + state + ""
+        )
 
     cur.execute(
-        "select filename, state from temp.clip"
+        "select start, end, state, filename from temp.clip"
     )
-    clip_list = list(map(lambda row: list(row), cur.fetchall()))
-    print(clip_list)
+    clip_list = list(map(
+        lambda row: {"range": [row["start"], row["end"]], "state": row["state"], "filename": row["filename"]},
+        cur.fetchall()
+        )
+    )
     return jsonify(clip_list)
 
 
@@ -203,15 +210,39 @@ def has_clip(filename):
     return cur.execute("SELECT * FROM clip WHERE filename='" + filename + "'").fetchone() is not None
 
 
-def new_clip(filename, video_filename):
+def clip_state(filename):
+    cur = get_db().cursor()
+    row = cur.execute("SELECT * FROM clip WHERE filename='" + filename + "'").fetchone()
+    if row is not None:
+        return row['state']
+    else:
+        return -1
+
+
+def valid_clip_filename(filename):
+    return re.match(r'\d+\.mp4$', filename) is not None
+
+
+def valid_time(time):
+    return re.match(r'\d:\d\d:\d\d.\d\d\d$', time) is not None
+
+
+def new_clip(filename, video_filename, start, end):
     db = get_db()
     cur = db.cursor()
-    cur.execute(
-        'INSERT INTO clip(filename, video_filename, state)'
-        'VALUES (?, ?, ?)',
-        (filename, video_filename, 0)
-    )
-    db.commit()
+    if not valid_clip_filename(filename) or not valid_time(start) or not valid_time(end) or not has_video(video_filename):
+        return False
+    try:
+        cur.execute(
+            'INSERT INTO clip(filename, video_filename, start, end, state)'
+            'VALUES (?, ?, ?, ?, ?)',
+            (filename, video_filename, start, end, 0)
+        )
+        db.commit()
+    except sqlite3.IntegrityError:
+        return False
+
+    return True
 
 
 def set_clip_state(filename, state=1):
@@ -221,3 +252,19 @@ def set_clip_state(filename, state=1):
         "UPDATE clip SET state=" + str(state) + " WHERE filename='" + filename + "'"
     )
     db.commit()
+
+
+@bp.route('/remove_clip/<string:filename>')
+def remove_clip(filename):
+    if clip_state(filename) != 1:
+        abort(404)
+    db = get_db()
+    cur = db.cursor()
+    try:
+        cur.execute("DELETE FROM clip WHERE filename='" + filename + "'")
+        db.commit()
+        os.remove(os.path.join(get_path(), filename))
+    except:
+        abort(404)
+
+    return 'ok'

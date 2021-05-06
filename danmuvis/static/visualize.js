@@ -1,72 +1,36 @@
-async function visualize() {
+let danmuvisDraw, danmuvisDrawClipRanges;
+let highlightType = 'density';
 
-highlight = await fetch('/highlight/' + filename).then(response => response.json());
+function visualize(highlight) {
+  let data = highlight[highlightType];
+  const deltaTime = 10;
 
+  const height = 100
+  const width = 1000
+  const margin = ({top: 10, right: 50, bottom: 0, left: 50})
 
-yLabel = 'density';
-deltaTime = 10;
-data = highlight[yLabel];
+  const x = d3.scaleLinear()
+      .domain([0, data.length * deltaTime])
+      .range([margin.left, width - margin.right])
 
-height = 100
-width = 1000
-margin = ({top: 10, right: 50, bottom: 0, left: 50})
+  const y = d3.scaleLinear()
+      .domain([0, d3.max(data)]).nice()
+      .range([height - margin.bottom, margin.top])
 
-x = d3.scaleLinear()
-    .domain([0, data.length * deltaTime])
-    .range([margin.left, width - margin.right])
-
-y = d3.scaleLinear()
-    .domain([0, d3.max(data)]).nice()
-    .range([height - margin.bottom, margin.top])
-
-xAxis = (g, x) => g
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
-
-yAxis = (g, y) => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(null, "s"))
-    .call(g => g.select(".domain").remove())
-    .call(g => g.select(".tick:last-of-type text").clone()
-        .attr("x", 3)
-        .attr("text-anchor", "start")
-        .attr("font-weight", "bold")
-        .text(yLabel))
-
-area = (data, x) => d3.area()
-    .curve(d3.curveNatural)
-    .x((d, i) => x(i * deltaTime))
-    .y0(y(0))
-    .y1(d => y(d))
-  (data)
-
-
-chart = function() {
+  const area = (data, x) => d3.area()
+      .curve(d3.curveNatural)
+      .x((d, i) => x(i * deltaTime))
+      .y0(y(0))
+      .y1(d => y(d))
+    (data)
 
   const svg = d3.create("svg")
       .attr("viewBox", [0, 0, width, height])
       .classed("noselect", true);
 
-  const clip = {id: 'clip0'};
-
-  svg.append("clipPath")
-      .attr("id", clip.id)
-    .append("rect")
-      .attr("x", margin.left)
-      .attr("y", margin.top)
-      .attr("width", width - margin.left - margin.right)
-      .attr("height", height - margin.top - margin.bottom);
-
   const path = svg.append("path")
-      .attr("clip-path", clip)
       .attr("fill", "steelblue")
       .attr("d", area(data, x));
-
-//  const gx = svg.append("g")
-//      .call(xAxis, x);
-//
-//  const gy = svg.append("g")
-//      .call(yAxis, y);
 
   const cursor = svg.append('rect')
       .attr('width', 1)
@@ -97,7 +61,6 @@ chart = function() {
     zoomedTransform = event.transform;
     const xz = event.transform.rescaleX(x);
     path.attr("d", area(data, xz));
-//    gx.call(xAxis, xz);
     drawClipRanges();
     const cursorTime = xz.invert(cursor.attr("x"));
     cursorLabelUpdate(cursorTime);
@@ -107,8 +70,13 @@ chart = function() {
     return event instanceof WheelEvent;
   }
 
-  svg.call(zoom)
-    .call(zoom.scaleTo, 1);
+  function draw() {
+    data = highlight[highlightType];
+    y.domain([0, d3.max(data)]).nice()
+    svg.call(zoom)
+      .call(zoom.scaleTo, 1);
+  }
+  draw();
 
   function cursorLabelUpdate(time) {
     cursorLabel
@@ -180,7 +148,7 @@ chart = function() {
     mousedownTime = time;
     mouseupTime = null;
 
-    addClipRange(time, 0);
+    addClipRange([time, 0]);
   }
 
   function onMouseup(e, d) {
@@ -196,6 +164,7 @@ chart = function() {
     } else {
       console.log("clip: ", mousedownTime, mouseupTime);
       setClipRange([mousedownTime, mouseupTime]);
+      drawClipList();
     }
   }
 
@@ -263,11 +232,14 @@ chart = function() {
     setTimeTranslateSpeed(s);
   }
 
-  return svg.node();
+  document.getElementById("visualize_container").append(svg.node());
+
+  danmuvisDraw = draw;
+  danmuvisDrawClipRanges = drawClipRanges;
 }
 
-document.getElementById("visualize_container").append(chart())
 
-}
-
-visualize();
+fetch('/highlight/' + filename)
+    .then(response => response.json())
+    .then(highlight => visualize(highlight))
+    .then(() => updateClipList());

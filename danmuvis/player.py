@@ -1,5 +1,6 @@
 import os
 import os.path
+import re
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, send_from_directory, jsonify
@@ -11,7 +12,6 @@ from danmuvis.db import get_db
 
 from .file import get_path, has_video, has_clip, new_clip, set_clip_state
 from .video import Video
-
 
 bp = Blueprint('player', __name__)
 
@@ -81,19 +81,32 @@ def get_clip(filename):
         abort(404)
 
 
+def do_clip(filename, video_filename, start, end):
+    # do clip, use executor, need implementation
+    v = Video(video_filename, get_path())
+    v.clip([start, end], filename)
+    set_clip_state(filename, 1)
+
+
 @bp.route('/do_clip', methods=('POST',))
-@login_required
 def clip():
-    pass
+    filename = request.form.get('filename', '')
+    video_filename = request.form.get('video_filename', '')
+    start = request.form.get('start', '')
+    end = request.form.get('end', '')
+    if new_clip(filename, video_filename, start, end):
+        # executor, do clip, not implemente
+        do_clip(filename, video_filename, start, end)
+        return 'ok'
+    else:
+        return 'clip failed'
 
 
 @bp.route('/test_clip/<string:filename>')
 def _test_clip(filename):
-    v = Video(filename, get_path())
     for i in range(10):
-        clipname = 'test_clip_' + str(i) + '.mp4'
-        new_clip(clipname, filename)
-        v.clip([i + 1, 3 * i + 3], clipname)
-        input()
-        set_clip_state(clipname, 1)
+        clipname = str(i) + '.mp4'
+        if new_clip(clipname, filename, '0:00:0' + str(i) + '.000', '0:00:' + str(3 * i + 3) + '.000'):
+            input()
+            do_clip(clipname, filename,  '0:00:0' + str(i) + '.000', '0:00:' + str(3 * i + 3) + '.000')
     return 'done'

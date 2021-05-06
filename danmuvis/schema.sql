@@ -18,6 +18,8 @@ CREATE TABLE video (
 
 CREATE TABLE clip (
   filename TEXT PRIMARY KEY,
+  start TEXT NOT NULL,
+  end TEXT NOT NULL,
   video_filename TEXT NOT NULL,
   state int NOT NULL
 );

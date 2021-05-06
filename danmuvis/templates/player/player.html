@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
+{% block title %}{{ filename }}{% endblock %}
 
 {% block header %}
+<script> filename = '{{ filename }}' </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 {% endblock %}
 
 {% block content %}
@@ -11,17 +14,30 @@
 
 <div id="visualize_container"></div>
 
+<div id="clipList"></div>
 
-<table id="cliplist">
-    <thead>
-        <tr>
-            <th>相关切片</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<div id="control">
+    <button onclick="updateClipList()"><i class="fas fa-sync"></i></button>
 
-<script> filename = '{{ filename }}' </script>
+    <label for="highlightType">弹幕精彩类型</label>
+    <select name="highlightType" id="highlightType" onchange="console.log(this.value); highlightType=this.value; danmuvisDraw();">
+        <option value="density">密度值</option>
+        <option value="funny">欢乐值</option>
+        <option value="exciting">刺激值</option>
+        <option value="lovely">可爱值</option>
+    </select>
+
+
+    <label for="playbackRate">播放速率</label>
+    <select name="playbackRate" id="playbackRate" onchange="videoElement.playbackRate=parseFloat(this.value);">
+        <option value="1.0">1.0x</option>
+        <option value="1.5">1.5x</option>
+        <option value="2.0">2.0x</option>
+        <option value="4.0">4.0x</option>
+        <option value="8.0">8.0x</option>
+    </select>
+</div>
+
 
 <script src="{{ url_for('static', filename='flv.min.js') }}"></script>
 <script src="{{ url_for('static', filename='d3.v6.min.js') }}"></script>
