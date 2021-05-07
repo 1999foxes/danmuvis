@@ -96,6 +96,11 @@ def update_files():
                     d.generateHighlight()
                     d.generateASS()
                     os.rename(os.path.join(path, filename), os.path.join(path, filename[0:-4] + '.ready.xml'))
+
+    cur.execute("SELECT filename FROM clip WHERE video_filename NOT IN (SELECT filename FROM video)")
+    for row in cur.fetchall():
+        remove_clip(row['filename'])
+
     db.commit()
     pass
 

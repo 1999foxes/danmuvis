@@ -227,7 +227,7 @@ input[type='button']:hover, button:hover {
     left: 0.6rem;
 }
 
-.clip .downloadButton, .clip .confirmButton {
+.clip .downloadButton, .clip .confirmButton, .clip .spinnerButton {
     position: absolute;
     bottom: 0.6rem;
     left: 0.6rem;

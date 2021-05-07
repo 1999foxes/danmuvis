@@ -194,9 +194,7 @@ function visualize(highlight) {
   function onMouseleave(e) {
     if (isMousedown)
         onMouseup(e);
-    d3.transition()
-        .duration(1000)
-        .on("end", loopCursorTranslateWithCurrentTime);
+    loopCursorTranslateWithCurrentTime();
   }
 
   svg.on("mousedown", onMousedown)
