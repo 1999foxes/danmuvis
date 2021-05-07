@@ -2,7 +2,36 @@
 {% block title %}{{ filename }}{% endblock %}
 
 {% block nav %}
-<h3>{{ filename }}</h3>
+<p>{{ filename }}</p>
+{% endblock %}
+
+{% block navUl %}
+<li>
+    <label for="highlightType">弹幕精彩类型</label>
+</li>
+
+<li>
+    <select name="highlightType" id="highlightType" onchange="console.log(this.value); highlightType=this.value; danmuvisDraw();">
+        <option value="density">密度值</option>
+        <option value="funny">欢乐值</option>
+        <option value="exciting">刺激值</option>
+        <option value="lovely">可爱值</option>
+    </select>
+</li>
+
+<li>
+    <label for="playbackRate">播放速率</label>
+</li>
+
+<li>
+    <select name="playbackRate" id="playbackRate" onchange="videoElement.playbackRate=parseFloat(this.value);">
+        <option value="1.0">1.0x</option>
+        <option value="1.5">1.5x</option>
+        <option value="2.0">2.0x</option>
+        <option value="4.0">4.0x</option>
+        <option value="8.0">8.0x</option>
+    </select>
+</li>
 {% endblock %}
 
 {% block content %}
@@ -13,27 +42,27 @@
 </div>
 
 <div id="visContainer"></div>
-<div id="visControl">
-<!--    <button onclick="updateClipList()"><i class="fas fa-sync"></i></button>-->
+<!--<div id="visControl">-->
+<!--&lt;!&ndash;    <button onclick="updateClipList()"><i class="fas fa-sync"></i></button>&ndash;&gt;-->
 
-    <label for="highlightType">弹幕精彩类型</label>
-    <select name="highlightType" id="highlightType" onchange="console.log(this.value); highlightType=this.value; danmuvisDraw();">
-        <option value="density">密度值</option>
-        <option value="funny">欢乐值</option>
-        <option value="exciting">刺激值</option>
-        <option value="lovely">可爱值</option>
-    </select>
+<!--    <label for="highlightType">弹幕精彩类型</label>-->
+<!--    <select name="highlightType" id="highlightType" onchange="console.log(this.value); highlightType=this.value; danmuvisDraw();">-->
+<!--        <option value="density">密度值</option>-->
+<!--        <option value="funny">欢乐值</option>-->
+<!--        <option value="exciting">刺激值</option>-->
+<!--        <option value="lovely">可爱值</option>-->
+<!--    </select>-->
 
 
-    <label for="playbackRate">播放速率</label>
-    <select name="playbackRate" id="playbackRate" onchange="videoElement.playbackRate=parseFloat(this.value);">
-        <option value="1.0">1.0x</option>
-        <option value="1.5">1.5x</option>
-        <option value="2.0">2.0x</option>
-        <option value="4.0">4.0x</option>
-        <option value="8.0">8.0x</option>
-    </select>
-</div>
+<!--    <label for="playbackRate">播放速率</label>-->
+<!--    <select name="playbackRate" id="playbackRate" onchange="videoElement.playbackRate=parseFloat(this.value);">-->
+<!--        <option value="1.0">1.0x</option>-->
+<!--        <option value="1.5">1.5x</option>-->
+<!--        <option value="2.0">2.0x</option>-->
+<!--        <option value="4.0">4.0x</option>-->
+<!--        <option value="8.0">8.0x</option>-->
+<!--    </select>-->
+<!--</div>-->
 
 <div id="clipList"></div>
 

@@ -4,12 +4,12 @@
     border: 0;
     outline: 0;
     box-sizing: border-box;
-    color: #b4a5a5;
+    color: #ffffff;
 }
 
 html {
     font-family: sans-serif;
-    background: #151515;
+    background: #121212;
     width: 100%;
 }
 
@@ -18,52 +18,81 @@ body {
 }
 
 h1 {
-    color: #b4a5a5;
+    color: #ffffff;
     margin: 1rem 0;
     margin: 0;
 }
 
-input, select {
-    background: #191919;
-    color: #b4a5a5;
-    padding: 5px 20px;
-    border-radius: 5px;
-}
-
-input[type='button'], button {
-    background: #3c415c;
-    cursor: pointer;
-}
-
-input[type='button']:hover, button:hover {
-    color: #151515;
-}
 
 ::-webkit-calendar-picker-indicator {
     filter: invert(0.5);
 }
 
-nav { height: 2.5rem; width: 100%; background: #3c415c; display: flex; align-items: center; padding: 0 0.5rem; }
-nav h1, nav h3 { flex: auto; margin: 0; }
-nav h1:hover { color: #151515; cursor: pointer; }
-nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
-nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
+nav, #playlistFilterDiv, #layoutButton, .videoCard, .clip {
+    box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 2;
+}
 
+.videoCard, .clip, input, select, button {
+    border-radius: 0.6rem;
+}
+
+#layoutButton:hover, input[type='button']:hover, button:hover {
+    transform: scale(1.05, 1.05);
+}
+
+#layoutButton:hover, .videoCard:hover, .clip:hover, input:hover, select:hover, button:hover {
+    background-image:  linear-gradient(to right, RGBA(255,255,255,0.04), RGBA(255,255,255,0.04));
+    background-blend-mode: normal;
+}
+
+input:hover, select:hover{
+    background-image:  linear-gradient(to right, RGBA(105, 58, 138,0.12), RGBA(105, 58, 138,0.12));
+    background-blend-mode: normal;
+}
+
+nav { height: 3.5rem; width: 100%;
+    background: #1E1E1E; display: flex; align-items: center;
+    padding: 0 0.5rem;
+}
+nav h1 { color: #BB86FC; flex: auto; margin: 0 2rem; }
+nav h1:hover { color: #03DAC6; cursor: pointer; }
+nav p { color: #ffffff; flex: auto; margin: 0 2rem; }
+nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
+nav ul li * { display: inline; vertical-align: middle; padding: 0.5rem; }
+nav ul li label { margin-left: 1rem; }
 .flash { margin: 1em 0; padding: 1em; background: #cae6f6; border: 1px solid #377ba8; }
 .noselect {
     user-select: none;
 }
 
 #playlistFilterDiv {
-    background: #301b3f;
+    background: #1E1E1E;
     width: 100%;
     margin-bottom: 20px;
     padding: 20px;
     text-align: center;
 }
 #playlistFilterDiv div {
-    margin: 10px 20px;
+    margin: 0 10px;
     display: inline-block;
+}
+input, select {
+    background: #121212;
+    color: #BB86FC;
+    padding: 5px 20px;
+}
+
+input[type='button'], button {
+    font-weight: bold;
+    color: #000000;
+    background: #BB86FC;
+    cursor: pointer;
+}
+
+input[type='button']:hover, button:hover {
+    color: #121212;
 }
 
 
@@ -82,21 +111,27 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
     height: 200px;
     margin: 40px 20px;
     padding: 20px 30px 30px 20px;
-    background-size: cover;
-    background-blend-mode: multiply;
+    background-color: #1E1E1E;
     cursor: pointer;
     text-align: left;
+    position: relative;
 }
 
-.videoCard:hover {
-    transform: scale(1.05, 1.05);
+.videoCard .title {
+    font-weight: normal;
+    margin-bottom: 15px;
 }
 
-.videoCard .filename {
-    margin-bottom: 10px;
-}
-.videoCard:hover .filename{
-    color: white;
+.videoCard .bg {
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    border-radius: 0.6rem;
 }
 
 
@@ -113,19 +148,16 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 }
 
 #playlist td {
-    font-size: 16px;
-    padding: 15px;
-    margin: 0px;
+    font-size: 1.1rem;
+    padding: 0.8rem;
 }
-#playlist td:hover {
-    font-size: 20px;
-    padding: 13px;
+#playlist tr:hover td {
+    color: #BB86FC;
 }
 
 
 #layoutButton {
-    background: #3c415c;
-    color: white;
+    background: #BB86FC;
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -136,8 +168,8 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
     cursor: pointer;
 }
 
-#layoutButton:hover i {
-    color: #151515;
+#layoutButton i {
+    color: #000000;
 }
 
 #visContainer {
@@ -147,8 +179,7 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
     bottom: 0px;
     left: 0px;
     z-index: 3;
-    background-image:
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+    background-color: rgba(30,30,30,0.7);
 }
 
 #video {
@@ -163,52 +194,43 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 
 #clipList {
     position: fixed;
-    top: 4.5rem;
+    top: 3.5rem;
     right: 0;
     z-index: 2;
-    width: 300px;
+    width: 18rem;
     height: calc(100vh - 4.5rem - 10vw);
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: clip;
 }
 
-#visControl {
-    position: fixed;
-    top: 2.5rem;
-    right: 0;
-    z-index: 2;
-    background: rgba(48, 27, 63, 0.5);
-}
-
-#visControl label {
-    margin-left: 10px;
-}
 
 .clip {
-    padding: 5px;
-    border-radius: 5px;
-    background-image: linear-gradient(to right, RGBA(48, 27, 63,0.2), RGBA(48, 27, 63,0.2));
-    background-blend-mode: multiply;
+    padding: 1.2rem;
+    margin: 0.2rem;
+    background-color: RGBA(30,30,30,1);
     cursor: pointer;
-}
-
-.clip:hover {
-    background-image: linear-gradient(to right, RGBA(48, 27, 63,0.5), RGBA(48, 27, 63,0.5));
+    position: relative;
 }
 
 .clip .clipRange {
-    text-align: right;
-    padding-right: 10px;
+    text-align: center;
+    margin-left: 0.6rem;
 }
 
 .clip button {
     background: rgba(0, 0, 0, 0);
-    margin: 5px;
 }
 
 .clip .cancelButton {
-    position: relative;
-    top: -23px;
-    left: -23px;
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+}
+
+.clip .downloadButton, .clip .confirmButton {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 0.6rem;
 }
 
 .clip .cancelButton i:hover {

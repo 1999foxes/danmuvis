@@ -50,14 +50,17 @@ function drawVideoCard(d, i, nodes) {
     let date = d[2];
     let videoCard = d3.select(nodes[i]);
     videoCard.node().innerHTML = '';
-    videoCard.node().style.backgroundImage='url(/image/'+encodeURIComponent(filename)+'), linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.2))';
+    //videoCard.node().style.backgroundImage='linear-gradient(rgba(30, 30, 30, 0.8), rgba(30, 30, 30, 0.8)),url(/image/'+encodeURIComponent(filename)+')';
     videoCard.append('h3')
-            .classed('filename', true)
-            .text(filename);
+            .classed('title', true)
+            .text(filename.split('.')[0]);
     videoCard.append('p')
             .classed('streamer', true)
             .classed('date', true)
             .text(streamer + '-' + date);
+    videoCard.append('div')
+            .classed('bg', true)
+            .style('background-image', 'url(/image/'+encodeURIComponent(filename)+')');
 }
 
 

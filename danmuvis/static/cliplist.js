@@ -47,7 +47,7 @@ function drawClipList() {
 
     clips.enter()
         .append('div')
-            .style('background-color', (d, i) => colorScheme[i % colorScheme.length])
+            //.style('background-color', (d, i) => colorScheme[i % colorScheme.length])
             .classed('clip', true)
             .each(drawClip);
     clips.each(drawClip);
@@ -71,7 +71,8 @@ function drawClip(d, i, nodes) {
         control = clipNode.append('div')
                 .classed('clipControl', true);
     }
-    range.text(d.range[0] + '-' + d.range[1]);
+    range.text(d.range[0] + '-' + d.range[1])
+            .style('color', colorScheme[i % colorScheme.length]);
 
     if (d.state == 0) {
         control.node().innerHTML = spinnerButton;

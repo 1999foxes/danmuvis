@@ -13,12 +13,13 @@
   <h1 onclick="window.location.href='{{ url_for('index') }}'">Danmuvis</h1>
   {%block nav %}{% endblock %}
   <ul>
+      {%block navUl %}{% endblock %}
     {% if g.user %}
       <li><span>{{ g.user['username'] }}</span>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+      <li><a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i></a>
     {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a>
+<!--      <li><a href="{{ url_for('auth.register') }}">注册</a>-->
+      <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i></a>
     {% endif %}
   </ul>
 </nav>

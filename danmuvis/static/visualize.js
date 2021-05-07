@@ -29,7 +29,7 @@ function visualize(highlight) {
       .classed("noselect", true);
 
   const path = svg.append("path")
-      .attr("fill", "rgb(164, 91, 215)")
+      .attr("fill", "#C190FE")
       .attr("d", area(data, x))
       .style('opacity', 0.6);
 
