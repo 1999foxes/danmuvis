@@ -1,5 +1,10 @@
 const clipList = [];
-const colorScheme = d3.schemeSet2;
+const colorScheme = ['rgba(0, 115, 168, 0.6)',
+    'rgba(155, 123, 221, 0.6)',
+    'rgba(255, 96, 162, 0.6)',
+    'rgba(255, 95, 95, 0.6)',
+    'rgba(255, 124, 67, 0.6)',
+    'rgba(255, 166, 0, 0.6)'];
 const clipRanges = [];
 
 async function fetchClipList(keyword='', video_filename='', state='') {
@@ -31,6 +36,10 @@ async function doClip(clip) {
     return response.text();
 }
 
+function color2Gradient(color) {
+    return 'linear-gradient(to right, ' + color + ', ' + color + ')';
+}
+
 function drawClipList() {
     let clips = d3.select('#clipList')
         .selectAll('.clip')
@@ -38,18 +47,19 @@ function drawClipList() {
 
     clips.enter()
         .append('div')
+            .style('background-color', (d, i) => colorScheme[i % colorScheme.length])
             .classed('clip', true)
-            .each(initClip);
-    clips.each(initClip);
+            .each(drawClip);
+    clips.each(drawClip);
     clips.exit().remove();
 }
 
-const downloadButton = '<button class="smallButton" onclick="downloadClipHandler(this.parentElement.parentElement); event.stopPropagation();"><i class="fa fa-download"></i></button>';
-const confirmButton = '<button class="smallButton" onclick="confirmClipHandler(this.parentElement.parentElement); event.stopPropagation();"><i class="fa fa-check-circle"></i></button>';
-const cancelButton = '<button class="smallButton" onclick="removeClipHandler(this.parentElement.parentElement); event.stopPropagation();"><i class="fa fa-times-circle"></i></button>';
-const spinnerButton = '<button class="smallButton"><i class="fa fa-spinner fa-spin"></i></button>';
+const downloadButton = '<button class="downloadButton" onclick="downloadClipHandler(this.parentElement.parentElement); event.stopPropagation();"><i class="fa fa-download"></i></button>';
+const confirmButton = '<button class="confirmButton" onclick="confirmClipHandler(this.parentElement.parentElement); event.stopPropagation();"><i class="fa fa-check-circle"></i></button>';
+const cancelButton = '<button class="cancelButton" onclick="removeClipHandler(this.parentElement.parentElement); event.stopPropagation();"><i class="fa fa-times-circle"></i></button>';
+const spinnerButton = '<button class="spinnerButton"><i class="fa fa-spinner fa-spin"></i></button>';
 
-function initClip(d, i, nodes) {
+function drawClip(d, i, nodes) {
     clipNode = d3.select(nodes[i]);
     clipNode.attr('index', i);
     let range = clipNode.select('.clipRange');
@@ -187,12 +197,12 @@ function autoUpdateClipList() {
 
 let checkWhenToStopTimeoutID = undefined;
 function checkWhenToStop(end) {
-    console.log('checkWhenToStop');
     if (videoElement.currentTime >= end) {
         videoElement.pause();
         window.clearTimeout(checkWhenToStopTimeoutID);
+        checkWhenToStopTimeoutID = undefined;
     } else {
-        window.setTimeout(checkWhenToStop, 1000, end);
+        checkWhenToStopTimeoutID = window.setTimeout(checkWhenToStop, 1000, end);
     }
 }
 

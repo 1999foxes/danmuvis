@@ -1,30 +1,220 @@
-html { font-family: sans-serif; background: #eee; padding: 1rem; }
-body { max-width: 960px; margin: 0 auto; background: white; }
-h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
-a { color: #377ba8; }
-hr { border: none; border-top: 1px solid lightgray; }
-nav { background: lightgray; display: flex; align-items: center; padding: 0 0.5rem; }
-nav h1 { flex: auto; margin: 0; }
-nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; }
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    outline: 0;
+    box-sizing: border-box;
+    color: #b4a5a5;
+}
+
+html {
+    font-family: sans-serif;
+    background: #151515;
+    width: 100%;
+}
+
+body {
+    width: 100%;
+}
+
+h1 {
+    color: #b4a5a5;
+    margin: 1rem 0;
+    margin: 0;
+}
+
+input, select {
+    background: #191919;
+    color: #b4a5a5;
+    padding: 5px 20px;
+    border-radius: 5px;
+}
+
+input[type='button'], button {
+    background: #3c415c;
+    cursor: pointer;
+}
+
+input[type='button']:hover, button:hover {
+    color: #151515;
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+}
+
+nav { height: 2.5rem; width: 100%; background: #3c415c; display: flex; align-items: center; padding: 0 0.5rem; }
+nav h1, nav h3 { flex: auto; margin: 0; }
+nav h1:hover { color: #151515; cursor: pointer; }
 nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
 nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
-.content { padding: 0 1rem 1rem; }
-.content > header { border-bottom: 1px solid lightgray; display: flex; align-items: flex-end; }
-.content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
-.flash { margin: 1em 0; padding: 1em; background: #cae6f6; border: 1px solid #377ba8; }
-.post > header { display: flex; align-items: flex-end; font-size: 0.85em; }
-.post > header > div:first-of-type { flex: auto; }
-.post > header h1 { font-size: 1.5em; margin-bottom: 0; }
-.post .about { color: slategray; font-style: italic; }
-.post .body { white-space: pre-line; }
-.content:last-child { margin-bottom: 0; }
-.content form { margin: 1em 0; display: flex; flex-direction: column; }
-.content label { font-weight: bold; margin-bottom: 0.5em; }
-.content input, .content textarea { margin-bottom: 1em; }
-.content textarea { min-height: 12em; resize: vertical; }
-input.danger { color: #cc2f2e; }
-input[type=submit] { align-self: start; min-width: 10em; }
 
+.flash { margin: 1em 0; padding: 1em; background: #cae6f6; border: 1px solid #377ba8; }
 .noselect {
     user-select: none;
+}
+
+#playlistFilterDiv {
+    background: #301b3f;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+}
+#playlistFilterDiv div {
+    margin: 10px 20px;
+    display: inline-block;
+}
+
+
+
+
+#playlistDiv {
+    margin: auto;
+    width: 90%;
+}
+
+
+
+.videoCard {
+    display: inline-block;
+    width: 400px;
+    height: 200px;
+    margin: 40px 20px;
+    padding: 20px 30px 30px 20px;
+    background-size: cover;
+    background-blend-mode: multiply;
+    cursor: pointer;
+    text-align: left;
+}
+
+.videoCard:hover {
+    transform: scale(1.05, 1.05);
+}
+
+.videoCard .filename {
+    margin-bottom: 10px;
+}
+.videoCard:hover .filename{
+    color: white;
+}
+
+
+#playlist {
+    margin: auto;
+    width: 100%;
+    border-collapse: collapse;
+    cursor: pointer;
+    table-layout: fixed;
+}
+
+#playlist th {
+    padding: 7px;
+}
+
+#playlist td {
+    font-size: 16px;
+    padding: 15px;
+    margin: 0px;
+}
+#playlist td:hover {
+    font-size: 20px;
+    padding: 13px;
+}
+
+
+#layoutButton {
+    background: #3c415c;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 50px;
+    left: 80px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#layoutButton:hover i {
+    color: #151515;
+}
+
+#visContainer {
+    cursor: none;
+    width: 100vw;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    z-index: 3;
+    background-image:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+}
+
+#video {
+    object-fit: contain;
+    width: 100vw;
+    height: calc(100vh - 2.5rem);
+}
+
+#videoContainer {
+    position: fixed;
+}
+
+#clipList {
+    position: fixed;
+    top: 4.5rem;
+    right: 0;
+    z-index: 2;
+    width: 300px;
+    height: calc(100vh - 4.5rem - 10vw);
+    overflow: auto;
+}
+
+#visControl {
+    position: fixed;
+    top: 2.5rem;
+    right: 0;
+    z-index: 2;
+    background: rgba(48, 27, 63, 0.5);
+}
+
+#visControl label {
+    margin-left: 10px;
+}
+
+.clip {
+    padding: 5px;
+    border-radius: 5px;
+    background-image: linear-gradient(to right, RGBA(48, 27, 63,0.2), RGBA(48, 27, 63,0.2));
+    background-blend-mode: multiply;
+    cursor: pointer;
+}
+
+.clip:hover {
+    background-image: linear-gradient(to right, RGBA(48, 27, 63,0.5), RGBA(48, 27, 63,0.5));
+}
+
+.clip .clipRange {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.clip button {
+    background: rgba(0, 0, 0, 0);
+    margin: 5px;
+}
+
+.clip .cancelButton {
+    position: relative;
+    top: -23px;
+    left: -23px;
+}
+
+.clip .cancelButton i:hover {
+    color: rgba(255, 55, 55, 0.7);
+}
+
+.clip .downloadButton i:hover, .clip .confirmButton i:hover {
+    color: rgba(55, 155, 55, 0.7);
 }

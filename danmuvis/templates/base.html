@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %} - DanmuVis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 </head>
 <body>
 
 <nav>
   <h1 onclick="window.location.href='{{ url_for('index') }}'">Danmuvis</h1>
+  {%block nav %}{% endblock %}
   <ul>
     {% if g.user %}
       <li><span>{{ g.user['username'] }}</span>
@@ -19,15 +22,10 @@
     {% endif %}
   </ul>
 </nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+{% for message in get_flashed_messages() %}
+  <div class="flash">{{ message }}</div>
+{% endfor %}
+{% block content %}{% endblock %}
 
 </body>
 </html>

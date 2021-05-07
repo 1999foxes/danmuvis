@@ -29,8 +29,9 @@ function visualize(highlight) {
       .classed("noselect", true);
 
   const path = svg.append("path")
-      .attr("fill", "steelblue")
-      .attr("d", area(data, x));
+      .attr("fill", "rgb(164, 91, 215)")
+      .attr("d", area(data, x))
+      .style('opacity', 0.6);
 
   const cursor = svg.append('rect')
       .attr('width', 1)
@@ -41,7 +42,7 @@ function visualize(highlight) {
       .text("0:00:00.000")
       .attr("x", margin.left + 10)
       .attr("y", margin.top + 10)
-      .style('fill', 'black')
+      .style('fill', 'white')
       .style('font-weight', 'bold')
       .style('font-size', '15px');
 
@@ -134,7 +135,7 @@ function visualize(highlight) {
         .attr("width", function(d) { return Math.max(zx(d[1]) - zx(d[0]), 0); })
         .attr("height", height)
         .style("fill", function(d, i) { return colorScheme[i % colorScheme.length]; })
-        .style("opacity", 0.2);
+        .style("opacity", 1);
 
     cr.exit().remove();
   }
@@ -232,7 +233,7 @@ function visualize(highlight) {
     setTimeTranslateSpeed(s);
   }
 
-  document.getElementById("visualize_container").append(svg.node());
+  document.getElementById("visContainer").append(svg.node());
 
   danmuvisDraw = draw;
   danmuvisDrawClipRanges = drawClipRanges;

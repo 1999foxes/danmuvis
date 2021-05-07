@@ -1,23 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}{{ filename }}{% endblock %}
 
-{% block header %}
-<script> filename = '{{ filename }}' </script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+{% block nav %}
+<h3>{{ filename }}</h3>
 {% endblock %}
 
 {% block content %}
 
-<div id="video_container">
-    <video id="video" style="width: 100%;"></video>
+<script> filename = '{{ filename }}' </script>
+<div id="videoContainer">
+    <video id="video"></video>
 </div>
 
-<div id="visualize_container"></div>
-
-<div id="clipList"></div>
-
-<div id="control">
-    <button onclick="updateClipList()"><i class="fas fa-sync"></i></button>
+<div id="visContainer"></div>
+<div id="visControl">
+<!--    <button onclick="updateClipList()"><i class="fas fa-sync"></i></button>-->
 
     <label for="highlightType">弹幕精彩类型</label>
     <select name="highlightType" id="highlightType" onchange="console.log(this.value); highlightType=this.value; danmuvisDraw();">
@@ -38,6 +35,9 @@
     </select>
 </div>
 
+<div id="clipList"></div>
+
+
 
 <script src="{{ url_for('static', filename='flv.min.js') }}"></script>
 <script src="{{ url_for('static', filename='d3.v6.min.js') }}"></script>
@@ -45,7 +45,7 @@
 
 <script>
 
-    var videoContainer = document.getElementById('video_container');
+    var videoContainer = document.getElementById('videoContainer');
     var videoElement = document.getElementById('video');
 
     // refer to https://github.com/Bilibili/flv.js#readme

@@ -1,40 +1,35 @@
 {% extends 'base.html' %}
 
-{% block header %}
-{% endblock %}
-
 {% block content %}
-<form id="playlistFilter">
-    <div>
-        <label for="keyword">标题关键字</label>
-        <input type="text" name="keyword" id="keyword">
-    </div>
-    <div>
-        <label for="streamer">主播</label>
-        <select name="streamer" id="streamer">
-        </select>
-    </div>
-    <div>
-        <label for="date">日期</label>
-        <input type="date" name="dateFrom" id="dateFrom">
-        <label for="date">到</label>
-        <input type="date" name="dateTo" id="dateTo">
-        <input type="button" id="resetDate" value="重置">
-    </div>
-    <div>
-        <input type="button" id="applyFilter" value="确定">
-    </div>
-</form>
-<table id="playlist">
-    <thead>
-        <tr>
-            <th>录播标题</th>
-            <th>主播</th>
-            <th>日期</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<div id="playlistFilterDiv">
+    <form id="playlistFilter">
+        <div>
+            <label form="playlistFilter" for="keyword">标题关键字</label>
+            <input type="text" name="keyword" id="keyword">
+        </div>
+        <div>
+            <label for="streamer">主播</label>
+            <select name="streamer" id="streamer">
+            </select>
+        </div>
+        <div>
+            <label for="date">日期</label>
+            <input type="date" name="dateFrom" id="dateFrom">
+            <label for="date">到</label>
+            <input type="date" name="dateTo" id="dateTo">
+        </div>
+        <div>
+            <input type="button" id="resetFilter" value="重置">
+            <input type="button" id="applyFilter" value="确定">
+        </div>
+    </form>
+</div>
+
+<div id="playlistDiv">
+</div>
+
+<button id="layoutButton"><i class="fas fa-list"></i></button>
+
 <script src="{{ url_for('static', filename='d3.v6.min.js') }}"></script>
 <script src="{{ url_for('static', filename='playlist.js') }}"></script>
 {% endblock %}
