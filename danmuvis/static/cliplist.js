@@ -1,10 +1,11 @@
 const clipList = [];
-const colorScheme = ['rgba(0, 115, 168, 0.6)',
-    'rgba(155, 123, 221, 0.6)',
-    'rgba(255, 96, 162, 0.6)',
-    'rgba(255, 95, 95, 0.6)',
-    'rgba(255, 124, 67, 0.6)',
-    'rgba(255, 166, 0, 0.6)'];
+//const colorScheme = ['rgba(0, 115, 168, 1)',
+//    'rgba(155, 123, 221, 1)',
+//    'rgba(255, 96, 162, 1)',
+//    'rgba(255, 95, 95, 1)',
+//    'rgba(255, 124, 67, 1)',
+//    'rgba(255, 166, 0, 1)'];
+const colorScheme = d3.schemeSet1
 const clipRanges = [];
 
 async function fetchClipList(keyword='', video_filename='', state='') {

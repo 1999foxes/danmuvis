@@ -185,7 +185,7 @@ input[type='button']:hover, button:hover {
 #video {
     object-fit: contain;
     width: 100vw;
-    height: calc(100vh - 2.5rem);
+    height: calc(100vh - 3.5rem);
 }
 
 #videoContainer {
@@ -214,7 +214,6 @@ input[type='button']:hover, button:hover {
 
 .clip .clipRange {
     text-align: center;
-    margin-left: 0.6rem;
 }
 
 .clip button {
@@ -223,14 +222,14 @@ input[type='button']:hover, button:hover {
 
 .clip .cancelButton {
     position: absolute;
-    top: 0.6rem;
-    left: 0.6rem;
+    top: 1.2rem;
+    right: 1.0rem;
 }
 
 .clip .downloadButton, .clip .confirmButton, .clip .spinnerButton {
     position: absolute;
-    bottom: 0.6rem;
-    left: 0.6rem;
+    top: 1.2rem;
+    left: 1.0rem;
 }
 
 .clip .cancelButton i:hover {

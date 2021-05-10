@@ -135,7 +135,7 @@ function visualize(highlight) {
         .attr("width", function(d) { return Math.max(zx(d[1]) - zx(d[0]), 0); })
         .attr("height", height)
         .style("fill", function(d, i) { return colorScheme[i % colorScheme.length]; })
-        .style("opacity", 1);
+        .style("opacity", 0.6);
 
     cr.exit().remove();
   }

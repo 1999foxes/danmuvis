@@ -30,7 +30,7 @@ def set_path(path):
     db = get_db()
     cur = db.cursor()
     cur.execute('DELETE FROM path')
-    cur.execute("INSERT INTO path(p) VALUES('" + path + "')")
+    cur.execute("INSERT INTO path(p) VALUES(?)", [path])
     db.commit()
 
 
@@ -133,22 +133,26 @@ def get_video_list():
     if len(keyword) > 0:
         cur.execute(
             "DELETE from temp.video"
-            " WHERE filename NOT LIKE '%" + keyword + "%'"
+            " WHERE filename NOT LIKE '%?%'",
+            [keyword]
         )
     if len(streamer) > 0:
         cur.execute(
             "DELETE from temp.video"
-            " WHERE streamer <> '" + streamer + "'"
+            " WHERE streamer <> ?",
+            [streamer]
         )
     if len(dateFrom) > 0:
         cur.execute(
             "DELETE from temp.video"
-            " WHERE date < '" + dateFrom + "'"
+            " WHERE date < ?",
+            [dateFrom]
         )
     if len(dateTo) > 0:
         cur.execute(
             "DELETE from temp.video"
-            " WHERE date > '" + dateTo + "'"
+            " WHERE date > ?",
+            [dateTo]
         )
 
     cur.execute(
@@ -181,17 +185,20 @@ def get_clip_list():
     if len(keyword) > 0:
         cur.execute(
             "DELETE from temp.clip"
-            " WHERE filename NOT LIKE '%" + keyword + "%'"
+            " WHERE filename NOT LIKE '%?%'",
+            [keyword]
         )
     if len(video_filename) > 0:
         cur.execute(
             "DELETE from temp.clip"
-            " WHERE video_filename <> '" + video_filename + "'"
+            " WHERE video_filename <> ?",
+            [video_filename]
         )
     if len(state) > 0:
         cur.execute(
             "DELETE from temp.clip"
-            " WHERE state <> " + state + ""
+            " WHERE state <> ?",
+            [state]
         )
 
     cur.execute(
@@ -207,17 +214,17 @@ def get_clip_list():
 
 def has_video(filename):
     cur = get_db().cursor()
-    return cur.execute("SELECT * FROM video WHERE filename='" + filename + "'").fetchone() is not None
+    return cur.execute("SELECT * FROM video WHERE filename=?", [filename]).fetchone() is not None
 
 
 def has_clip(filename):
     cur = get_db().cursor()
-    return cur.execute("SELECT * FROM clip WHERE filename='" + filename + "'").fetchone() is not None
+    return cur.execute("SELECT * FROM clip WHERE filename=?", [filename]).fetchone() is not None
 
 
 def clip_state(filename):
     cur = get_db().cursor()
-    row = cur.execute("SELECT * FROM clip WHERE filename='" + filename + "'").fetchone()
+    row = cur.execute("SELECT * FROM clip WHERE filename=?", [filename]).fetchone()
     if row is not None:
         return row['state']
     else:
@@ -254,7 +261,7 @@ def set_clip_state(filename, state=1):
     db = get_db()
     cur = db.cursor()
     cur.execute(
-        "UPDATE clip SET state=" + str(state) + " WHERE filename='" + filename + "'"
+        "UPDATE clip SET state=? WHERE filename=?", (state, filename)
     )
     db.commit()
 
@@ -266,7 +273,7 @@ def remove_clip(filename):
     db = get_db()
     cur = db.cursor()
     try:
-        cur.execute("DELETE FROM clip WHERE filename='" + filename + "'")
+        cur.execute("DELETE FROM clip WHERE filename=?", [filename])
         db.commit()
         os.remove(os.path.join(get_path(), filename))
     except:
