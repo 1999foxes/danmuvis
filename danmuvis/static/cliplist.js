@@ -1,12 +1,24 @@
 const clipList = [];
+const clipRanges = [];
 //const colorScheme = ['rgba(0, 115, 168, 1)',
 //    'rgba(155, 123, 221, 1)',
 //    'rgba(255, 96, 162, 1)',
 //    'rgba(255, 95, 95, 1)',
 //    'rgba(255, 124, 67, 1)',
 //    'rgba(255, 166, 0, 1)'];
-const colorScheme = d3.schemeSet1
-const clipRanges = [];
+const colorScheme = d3.schemeSet1;
+let colorSchemeIndex = 0;
+const colorSchemeMap = new Map();
+function getColorByFilename(filename) {
+    if (colorSchemeMap.has(filename)) {
+        return colorSchemeMap.get(filename);
+    } else {
+        const color = colorScheme[(colorSchemeIndex++) % colorScheme.length];
+        colorSchemeMap.set(filename, color);
+        return color;
+    }
+}
+
 
 async function fetchClipList(keyword='', video_filename='', state='') {
     const fd = new FormData();
@@ -73,7 +85,8 @@ function drawClip(d, i, nodes) {
                 .classed('clipControl', true);
     }
     range.text(d.range[0] + '-' + d.range[1])
-            .style('color', colorScheme[i % colorScheme.length]);
+            //.style('color', colorScheme[i % colorScheme.length]);
+            .style('color', getColorByFilename(d.filename));
 
     if (d.state == 0) {
         control.node().innerHTML = spinnerButton;
@@ -85,10 +98,8 @@ function drawClip(d, i, nodes) {
 }
 
 function removeClipHandler(clipNode) {
-    console.log('remove', clipNode);
     index = clipNode.getAttribute("index");
     clip = d3.select(clipNode).datum();
-    console.log(clip);
     if (clip.state == 1) {
         console.log('fetch:', '/file/remove_clip/' + clip.filename);
         fetch('/file/remove_clip/' + clip.filename);

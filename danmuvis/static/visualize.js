@@ -126,7 +126,8 @@ function visualize(highlight) {
       .data(clipRanges);
 
     cr.attr("x", function(d) { return zx(d[0]); })
-        .attr("width", function(d) { return Math.max(zx(d[1]) - zx(d[0]), 0); });
+        .attr("width", function(d) { return Math.max(zx(d[1]) - zx(d[0]), 0); })
+        .style("fill", function(d, i) { return getColorByFilename(clipList[i].filename); });
 
     cr.enter()
       .append("rect")
@@ -134,7 +135,8 @@ function visualize(highlight) {
         .attr("x", function(d) { return zx(d[0]); })
         .attr("width", function(d) { return Math.max(zx(d[1]) - zx(d[0]), 0); })
         .attr("height", height)
-        .style("fill", function(d, i) { return colorScheme[i % colorScheme.length]; })
+        //.style("fill", function(d, i) { return colorScheme[i % colorScheme.length]; })
+        .style("fill", function(d, i) { return getColorByFilename(clipList[i].filename); })
         .style("opacity", 0.6);
 
     cr.exit().remove();
