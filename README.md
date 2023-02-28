@@ -8,7 +8,8 @@
 
 
 使用方法：
-```set FLASK_APP=danmuvis
+```
+set FLASK_APP=danmuvis
 python -m flask update-files -p YOUR_PATH_TO_RESOURCE_FOLDER
 python -m flask run
 ```
